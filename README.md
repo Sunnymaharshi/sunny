@@ -1,5 +1,5 @@
 # Sunny
-### A Simple Notepad for Android Phones
+### A Simple Notepad for Android Users
 ### features
   + You can share text from other apps.
   * You can restore deleted notes.
