@@ -182,8 +182,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.restore_del:
                 mydb.restore_del();
                 if(!mydb.haveState("3")){
-                    allNotes();
                     Toast.makeText(MainActivity.this,"Restored all deleted notes",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(MainActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
                 else {
                     Toast.makeText(MainActivity.this,"Error occurred in restoring deleted notes",Toast.LENGTH_SHORT).show();
