@@ -60,8 +60,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else {
-            list_li.setVisibility(View.VISIBLE);
-            mylist.setVisibility(View.VISIBLE);
+            if((!mydb.haveState("1")) && (!mydb.haveState("2"))){
+                nonote_li.setVisibility(View.VISIBLE);
+                no_image.setVisibility(View.VISIBLE);
+                no_note.setVisibility(View.VISIBLE);
+            }
+            else{
+                list_li.setVisibility(View.VISIBLE);
+                mylist.setVisibility(View.VISIBLE);
+            }
             Cursor c=mydb.fetchAll();
             final String[] fieldNames=new String[]  {NotesDb.Id, NotesDb.Notes_C,NotesDb.Date_C,NotesDb.Time_C,NotesDb.State_C };
             int[] display=new  int[] {R.id.id_list, R.id.note_List,R.id.date_list,R.id.time_list,R.id.state_list};
