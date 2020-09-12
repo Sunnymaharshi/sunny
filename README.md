@@ -1,4 +1,4 @@
-#Sunny
+# Sunny
 ### A Simple Notepad for Android Phones
 ### features
   + You can share text from other apps.
