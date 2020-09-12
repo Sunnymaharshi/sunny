@@ -53,15 +53,23 @@ public class MainActivity extends AppCompatActivity {
         no_image=findViewById(R.id.nonote_img);
         no_note=findViewById(R.id.nonote_textv);
         mydb=new NotesDb(MainActivity.this);
-        if(!mydb.haveEntries()){
+        if(!mydb.haveEntries() ){
             nonote_li.setVisibility(View.VISIBLE);
             no_image.setVisibility(View.VISIBLE);
             no_note.setVisibility(View.VISIBLE);
 
         }
         else {
-            list_li.setVisibility(View.VISIBLE);
-            mylist.setVisibility(View.VISIBLE);
+            if((!mydb.haveState("1")) && (!mydb.haveState("2"))){
+                nonote_li.setVisibility(View.VISIBLE);
+                no_image.setVisibility(View.VISIBLE);
+                no_note.setVisibility(View.VISIBLE);
+            }
+            else{
+                list_li.setVisibility(View.VISIBLE);
+                mylist.setVisibility(View.VISIBLE);
+            }
+
             Cursor c=mydb.fetchAll();
             final String[] fieldNames=new String[]  {NotesDb.Id, NotesDb.Notes_C,NotesDb.Date_C,NotesDb.Time_C,NotesDb.State_C };
             int[] display=new  int[] {R.id.id_list, R.id.note_List,R.id.date_list,R.id.time_list,R.id.state_list};
@@ -118,20 +126,20 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.all_notes_m:
                 setTitle(all_notes_t);
-                if(!mydb.haveEntries()){
-                    list_li.setVisibility(View.INVISIBLE);
-                    mylist.setVisibility(View.INVISIBLE);
-                    nonote_li.setVisibility(View.VISIBLE);
-                    no_image.setVisibility(View.VISIBLE);
-                    no_note.setVisibility(View.VISIBLE);
-                }
-                else {
+                if(mydb.haveState("1") || mydb.haveState("2")){
                     list_li.setVisibility(View.VISIBLE);
                     mylist.setVisibility(View.VISIBLE);
                     nonote_li.setVisibility(View.INVISIBLE);
                     no_image.setVisibility(View.INVISIBLE);
                     no_note.setVisibility(View.INVISIBLE);
                     allNotes();
+                }
+                else {
+                    list_li.setVisibility(View.INVISIBLE);
+                    mylist.setVisibility(View.INVISIBLE);
+                    nonote_li.setVisibility(View.VISIBLE);
+                    no_image.setVisibility(View.VISIBLE);
+                    no_note.setVisibility(View.VISIBLE);
                 }
                 return true;
             case R.id.fav_main_m:
