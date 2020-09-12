@@ -1,9 +1,10 @@
 # A Simple Notepad for Android Phones
-Sunny app is build to take notes 
 ### features
   + you can share text from other apps.
   * you can restore deleted notes.
   + clear deleted notes in one click.
   * add notes to favourites.
 
-#### [download]()
+#### [Download Sunny](https://github.com/Sunnymaharshi/sunny/blob/master/night/sunny.apk)
+
+##### feel free to fork this project and do it in your way.
