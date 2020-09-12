@@ -9,11 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<activity android:name=".radhakrishn"
-            android:theme="@style/AppTheme.launcher"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
-
-        </activity>-->
         <activity android:name=".recieveInfo">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
