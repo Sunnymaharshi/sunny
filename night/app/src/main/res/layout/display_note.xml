@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".DisplayNote"
+    xmlns:tools="http://schemas.android.com/tools">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/date_time_view"
+            android:layout_gravity="top"
+            android:textColor="@color/grey"
+            android:gravity="top|end"
+            android:layout_marginBottom="3dp"/>
+        <EditText
+            android:inputType="textMultiLine"
+            android:id="@+id/note_view"
+            android:layout_width="match_parent"
+            android:autoLink="all"
+            android:linksClickable="true"
+            android:visibility="visible"
+            android:textColor="@color/black"
+            android:padding="6dp"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:layout_gravity="top|start"
+            android:hint="@string/your_notes_hint"
+            android:textColorHint="@color/grey"
+            android:gravity="top|start"
+            android:importantForAutofill="no" />
+
+
+    </LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottom_nav_view"
+        android:layout_gravity="bottom"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+        android:background="@color/light_white"
+        app:menu="@menu/view_menu"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

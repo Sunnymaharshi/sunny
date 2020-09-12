@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/linear_nonote"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/nono_main"
+            android:layout_gravity="center"
+            android:scaleType="center"
+            android:visibility="gone"
+            android:id="@+id/nonote_img"
+            android:contentDescription="@string/todo" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_notes_s"
+            android:id="@+id/nonote_textv"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_white"
+        android:padding="12dp"
+        android:id="@+id/linear_list"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:visibility="gone"
+        android:layout_marginRight="3dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="3dp">
+        <ListView
+
+            android:layout_width="match_parent"
+            android:id="@+id/List_view"
+            android:scrollbars="none"
+            android:visibility="gone"
+            android:divider="@color/light_white"
+            android:dividerHeight="10dp"
+            android:layout_height="match_parent" />
+
+
+
+    </LinearLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="26dp"
+        android:layout_marginBottom="36dp"
+        android:layout_gravity="end|bottom"
+        app:backgroundTint="@color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/add_f_v"
+        android:layout_marginEnd="26dp" />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
+

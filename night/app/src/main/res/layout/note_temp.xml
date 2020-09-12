@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/corner_listitem"
+    android:orientation="vertical"
+    android:padding="5dp"
+    >
+    <TextView
+        android:id="@+id/note_List"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:maxLines="9"
+        android:paddingHorizontal="9dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/date_list"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:gravity="end"
+        android:paddingBottom="3dp"
+        android:paddingHorizontal="6dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:id="@+id/id_list"/>
+
+    <TextView
+        android:id="@+id/time_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:id="@+id/state_list"/>
+
+</LinearLayout>

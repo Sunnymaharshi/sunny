@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/fav_view"
+        android:title="@string/favourite_"
+        android:icon="@drawable/star_b"
+        android:enabled="true"
+        />
+    <item android:id="@+id/share_view"
+        android:title="@string/share_"
+        android:icon="@drawable/share_b"
+        android:enabled="true"
+        />
+    <item android:id="@+id/delete_view"
+        android:icon="@drawable/delete"
+        android:enabled="true"
+        android:title="@string/delete_"/>
+
+</menu>
