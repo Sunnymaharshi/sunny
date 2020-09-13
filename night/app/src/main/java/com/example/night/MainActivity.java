@@ -117,6 +117,21 @@ public class MainActivity extends AppCompatActivity {
 
         return true;
     }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem clear_de=menu.findItem(R.id.clear_del);
+        MenuItem deleted=menu.findItem(R.id.deleted_m);
+        MenuItem restore_de=menu.findItem(R.id.restore_del);
+        if(mydb.haveEntries()) {
+            if (!mydb.haveState("3")) {
+                clear_de.setEnabled(false);
+                restore_de.setEnabled(false);
+                deleted.setEnabled(false);
+                return true;
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
