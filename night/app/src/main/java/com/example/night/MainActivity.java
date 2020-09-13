@@ -120,6 +120,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem clear_de=menu.findItem(R.id.clear_del);
+        MenuItem deleted=menu.findItem(R.id.deleted_m);
+        MenuItem restore_de=menu.findItem(R.id.restore_del);
+        if(mydb.haveEntries()) {
+            if (!mydb.haveState("3")) {
+                clear_de.setEnabled(false);
+                restore_de.setEnabled(false);
+                deleted.setEnabled(false);
+                return true;
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
 
@@ -183,8 +199,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.restore_del:
                 mydb.restore_del();
                 if(!mydb.haveState("3")){
-                    allNotes();
                     Toast.makeText(MainActivity.this,"Restored all deleted notes",Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(MainActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
                 else {
                     Toast.makeText(MainActivity.this,"Error occurred in restoring deleted notes",Toast.LENGTH_SHORT).show();
