@@ -13,6 +13,15 @@
         android:visibility="gone"
         android:orientation="vertical"
         >
+
+        <!--<com.google.android.gms.ads.AdView
+            android:id="@+id/ad_no_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-6480892200440742/8469960309">
+        </com.google.android.gms.ads.AdView>-->
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -45,6 +54,15 @@
         android:layout_marginRight="3dp"
         android:orientation="vertical"
         android:layout_marginLeft="3dp">
+        <!--<com.google.android.gms.ads.AdView
+            android:id="@+id/ad_li_top"
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            ads:adSize="BANNER"
+            android:layout_gravity="top"
+            ads:adUnitId="ca-app-pub-6480892200440742/6623537926">
+        </com.google.android.gms.ads.AdView>-->
         <ListView
 
             android:layout_width="match_parent"
@@ -54,6 +72,15 @@
             android:divider="@color/light_white"
             android:dividerHeight="10dp"
             android:layout_height="match_parent" />
+        <!--<com.google.android.gms.ads.AdView
+            android:id="@+id/ad_li_bot"
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            ads:adSize="BANNER"
+            android:layout_gravity="bottom"
+            ads:adUnitId="ca-app-pub-6480892200440742/2700604784">
+        </com.google.android.gms.ads.AdView>-->
 
 
 
@@ -69,7 +96,8 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/add_f_v"
-        android:layout_marginEnd="26dp" />
+        android:layout_marginEnd="26dp"
+        android:contentDescription="@string/todo" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

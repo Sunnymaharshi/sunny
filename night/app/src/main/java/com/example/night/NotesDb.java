@@ -107,8 +107,10 @@ public class NotesDb extends SQLiteOpenHelper {
         SQLiteDatabase db1=this.getReadableDatabase();
         Cursor c=db1.rawQuery("select * from "+ TableName+ " where state="+state,null);
         if(c.getCount()>0){
+            c.close();
             return true;
         }
+        c.close();
         return false;
     }
     public boolean clear_deleted(){
@@ -136,7 +138,7 @@ public class NotesDb extends SQLiteOpenHelper {
     }
     public Cursor fetchAll(){
         SQLiteDatabase db=this.getReadableDatabase();
-        Cursor cursor=db.rawQuery("select * from "+TableName+" where state=1 or state=2  order by _id desc ;",null);
+        Cursor cursor=db.rawQuery("select * from "+TableName+" where state=1 or state=2  order by _id DESC ;",null);
         if(cursor!=null){
             cursor.moveToFirst();
         }
@@ -144,7 +146,7 @@ public class NotesDb extends SQLiteOpenHelper {
     }
     public Cursor fetchDel(){
         SQLiteDatabase db=this.getReadableDatabase();
-        Cursor cursor=db.rawQuery("select * from "+TableName+" where state=3  order by _id desc ;",null);
+        Cursor cursor=db.rawQuery("select * from "+TableName+" where state=3  order by _id DESC ;",null);
         if(cursor!=null){
             cursor.moveToFirst();
         }
@@ -152,7 +154,7 @@ public class NotesDb extends SQLiteOpenHelper {
     }
     public Cursor fetchFav(){
         SQLiteDatabase db=this.getReadableDatabase();
-        Cursor cursor=db.rawQuery("select * from "+TableName+" where state=2 order by _id desc ;",null);
+        Cursor cursor=db.rawQuery("select * from "+TableName+" where state=2 order by _id DESC ;",null);
         if(cursor!=null){
             cursor.moveToFirst();
         }

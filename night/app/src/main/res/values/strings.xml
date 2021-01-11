@@ -1,18 +1,17 @@
 <resources>
-    <string name="app_name">Sunny</string>
+    <string name="app_name">CS Notes</string>
     <string name="your_notes_hint">my notes</string>
     <string name="favourite_">favourite</string>
     <string name="share_">share</string>
     <string name="delete_">delete</string>
     <string name="save_tb">save</string>
     <string name="deleted_notes_m_r">Deleted Notes</string>
-    <string name="my_favourites_m_r">My favourites</string>
-    <string name="all_notes_m_r">All notes</string>
-    <string name="no_notes_s">No notes</string>
-    <string name="todo">TODO</string>
-    <string name="radhakrishna">RadhaKrishna</string>
+    <string name="my_favourites_m_r">My Favourites</string>
+    <string name="all_notes_m_r">All Notes</string>
+    <string name="no_notes_s">No Notes</string>
     <string name="delete_all">Delete Everything</string>
     <string name="clear_all">Clear Deleted</string>
     <string name="restore">restore</string>
     <string name="restore_deleted">Restore Deleted</string>
+    <string name="todo">TODO</string>
 </resources>

@@ -7,6 +7,10 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,8 +25,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.nio.file.LinkOption;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -38,6 +46,7 @@ public class DisplayNote extends AppCompatActivity {
     Menu fav_i;
     BottomNavigationView bottomNavigationView;
     int id_To_Update;
+    private InterstitialAd ful_ad;
     int value_f_b;
     int state=1;
 
@@ -47,7 +56,6 @@ public class DisplayNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.display_note);
         setTitle(my_note);
-        /*note_text_view_v=findViewById(R.id.note_text_view);*/
         note=findViewById(R.id.note_view);
         bottomNavigationView=findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
@@ -63,7 +71,29 @@ public class DisplayNote extends AppCompatActivity {
 
             }
         });
+        note.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Linkify.addLinks(s,Linkify.ALL);
+            }
+        });
+        //note.setMovementMethod(LinkMovementMethod.getInstance());
+
         Bundle extras=getIntent().getExtras();
+        /*ful_ad= new InterstitialAd(this);
+        ful_ad.setAdUnitId("ca-app-pub-6480892200440742/6448278105");
+        AdRequest ful_adr= new AdRequest.Builder().build();
+        ful_ad.loadAd(ful_adr);*/
         if(extras!=null){
             value_f_b=extras.getInt("id");
             if(value_f_b==-3){
@@ -140,6 +170,7 @@ public class DisplayNote extends AppCompatActivity {
             return true;
         }
         if(item.getItemId()==R.id.retore){
+            saveNote();
             mydb.changeState(id_To_Update,1);
             Toast.makeText(DisplayNote.this,"note restored",Toast.LENGTH_SHORT).show();
             Intent intent=new Intent(DisplayNote.this,MainActivity.class);
@@ -158,6 +189,7 @@ public class DisplayNote extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()){
                         case R.id.fav_view:
+                           saveNote();
                            if(id_To_Update==0 ){
                                Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
                            }
@@ -175,6 +207,7 @@ public class DisplayNote extends AppCompatActivity {
                            }
                             return true;
                         case R.id.share_view:
+                            saveNote();
                             if(note.getText().toString().trim().equals("")){
                                 Toast.makeText(DisplayNote.this,"Can't Send Empty Note",Toast.LENGTH_SHORT).show();
                             }
@@ -190,17 +223,27 @@ public class DisplayNote extends AppCompatActivity {
                             }
                             return true;
                         case R.id.delete_view:
+                            final Bundle state=new Bundle();
                             if(id_To_Update==0){
                                 Toast.makeText(DisplayNote.this,"not saved yet",Toast.LENGTH_LONG).show();
                             }
                             else if(mydb.getState(id_To_Update)==1 || mydb.getState(id_To_Update)==2){
-                                mydb.changeState(id_To_Update,3);
-                                Toast.makeText(DisplayNote.this,"moved to deleted notes",Toast.LENGTH_LONG).show();
+
+
                                 if(value_f_b==-3 || value_f_b==-1){
                                     finishAffinity();
                                     System.exit(0);
                                 }
                                 Intent intent=new Intent(DisplayNote.this,MainActivity.class);
+                                if(mydb.getState(id_To_Update)==1){
+                                    state.putString("state","a");
+                                }
+                                else if(mydb.getState(id_To_Update)==2){
+                                    state.putString("state","a");
+                                }
+                                mydb.changeState(id_To_Update,3);
+                                Toast.makeText(DisplayNote.this,"moved to deleted notes",Toast.LENGTH_LONG).show();
+                                intent.putExtras(state);
                                 startActivity(intent);
                                 finish();
 
@@ -220,6 +263,8 @@ public class DisplayNote extends AppCompatActivity {
                                                 System.exit(0);
                                             }
                                             Intent intent=new Intent(DisplayNote.this,MainActivity.class);
+                                            state.putString("state","d");
+                                            intent.putExtras(state);
                                             startActivity(intent);
                                             finish();
                                         }
@@ -255,10 +300,66 @@ public class DisplayNote extends AppCompatActivity {
         if(!note.getText().toString().trim().equals("")){
             saveNote();
             if(value_f_b>=0){
+                Bundle state =new Bundle();
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                if(mydb.getState(id_To_Update)==1){
+                    state.putString("state","a");
+                }
+                else if(mydb.getState(id_To_Update)==2){
+                    state.putString("state","a");
+                }
+                else if(mydb.getState(id_To_Update)==3){
+                    state.putString("state","d");
+                }
+                intent.putExtras(state);
                 startActivity(intent);
             }
             finish();
+            /*if(ful_ad.isLoaded()){
+                ful_ad.show();
+            }
+            else{
+                Bundle state =new Bundle();
+                if(value_f_b>=0){
+                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    if(mydb.getState(id_To_Update)==1){
+                        state.putString("state","a");
+                    }
+                    else if(mydb.getState(id_To_Update)==2){
+                        state.putString("state","a");
+                    }
+                    else if(mydb.getState(id_To_Update)==3){
+                        state.putString("state","d");
+                    }
+                    intent.putExtras(state);
+                    startActivity(intent);
+                }
+                finish();
+
+            }
+            ful_ad.setAdListener(new AdListener(){
+                @Override
+                public void onAdClosed() {
+                    super.onAdClosed();
+                    Bundle state =new Bundle();
+                    if(value_f_b>=0){
+                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                        if(mydb.getState(id_To_Update)==1){
+                            state.putString("state","a");
+                        }
+                        else if(mydb.getState(id_To_Update)==2){
+                            state.putString("state","a");
+                        }
+                        else if(mydb.getState(id_To_Update)==3){
+                            state.putString("state","d");
+                        }
+                        intent.putExtras(state);
+                        startActivity(intent);
+                    }
+                    finish();
+                }
+            });*/
+
         }
         else {
             AlertDialog.Builder builder = new AlertDialog.Builder(DisplayNote.this);
@@ -309,6 +410,7 @@ public class DisplayNote extends AppCompatActivity {
             }
             else {
                 if(note.getText().toString().equals(mydb.getNote(id_To_Update))){
+
                 }
                 else{
                     if (mydb.updateNotes(id_To_Update, note.getText()

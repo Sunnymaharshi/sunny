@@ -25,7 +25,7 @@
             android:linksClickable="true"
             android:visibility="visible"
             android:textColor="@color/black"
-            android:padding="6dp"
+            android:padding="9dp"
             android:layout_height="match_parent"
             android:focusable="true"
             android:layout_gravity="top|start"
