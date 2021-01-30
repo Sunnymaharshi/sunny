@@ -1,10 +1,12 @@
 package com.example.night;
-
+import com.example.night.RateThisApp;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -18,6 +20,9 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
@@ -25,9 +30,13 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -46,17 +55,27 @@ public class MainActivity extends AppCompatActivity {
     String noDel="No deleted Notes";
     String noNote="No notes";
     int main_state;
-
-
+    Bundle main_bun ;
+    NavigationView navigationView;
+    Toolbar toolbar;
+    ActionBarDrawerToggle toggle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle(all_notes_t);
+        toolbar=(Toolbar) findViewById(R.id.toolbar_main);
+        toolbar.setTitle(all_notes_t);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(all_notes_t);
+        final DrawerLayout drawerLayout=findViewById(R.id.drawer_lay_main);
+        toggle=new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.nav_open_des,R.string.nav_close_des);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
         main_state=0;
-        new Bundle();
-        Bundle main_bun;
         main_bun=getIntent().getExtras();
+        navigationView=findViewById(R.id.main_nav_view_id);
+        RateThisApp.app_launched(this);
         /*MobileAds.initialize(this);
 
         no_n_ad=findViewById(R.id.ad_no_note);
@@ -96,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+        toolbar.setTitle(all_notes_t);
         if(!mydb.haveEntries() ){
             nonote_li.setVisibility(View.VISIBLE);
             no_image.setVisibility(View.VISIBLE);
@@ -103,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else {
-            if((!mydb.haveState("1")) && (!mydb.haveState("2"))){
+            if( !mydb.haveState("1") && !mydb.haveState("2") && !mydb.haveState("4") && !mydb.haveState("5") && !mydb.haveState("6")&& !mydb.haveState("7")){
                 nonote_li.setVisibility(View.VISIBLE);
                 no_image.setVisibility(View.VISIBLE);
                 no_note.setVisibility(View.VISIBLE);
@@ -132,35 +152,124 @@ public class MainActivity extends AppCompatActivity {
                 if(s.equals("a")){
                     change_to_all();
                 }
-                else if(s.equals("f")){
-                    change_to_fav();
-                }
                 else if(s.equals("d")){
                     change_to_deleted();
+                }
+                else if(s.equals("h")){
+                    change_to_home();
+                }
+                else if(s.equals("w")){
+                    change_to_work();
+                }
+                else if(s.equals("e")){
+                    change_to_edu();
+                }
+                else if(s.equals("o")){
+                    change_to_other();
                 }
             }
 
         }
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                 switch (item.getItemId()){
+                     case R.id.home_cat:
+                         change_to_home();
+                         drawerLayout.closeDrawer(GravityCompat.START);
+                         return true;
+                     case R.id.work_cat:
+                         change_to_work();
+                         drawerLayout.closeDrawer(GravityCompat.START);
+                         return true;
+                     case R.id.education_cat:
+                         change_to_edu();
+                         drawerLayout.closeDrawer(GravityCompat.START);
+                         return true;
+                     case R.id.other_cat:
+                         change_to_other();
+                         drawerLayout.closeDrawer(GravityCompat.START);
+                         return true;
+                     case R.id.personal_cat:
+                         toolbar.setTitle(R.string.personal_cat);
+                         fab_add.setVisibility(View.GONE);
+                         if(!mydb.haveState("8")){
+                             list_li.setVisibility(View.INVISIBLE);
+                             mylist.setVisibility(View.INVISIBLE);
+                             nonote_li.setVisibility(View.VISIBLE);
+                             no_image.setVisibility(View.VISIBLE);
+                             no_note.setVisibility(View.VISIBLE);
+                         }
+                         else {
+                             list_li.setVisibility(View.VISIBLE);
+                             mylist.setVisibility(View.VISIBLE);
+                             nonote_li.setVisibility(View.INVISIBLE);
+                             no_image.setVisibility(View.INVISIBLE);
+                             no_note.setVisibility(View.INVISIBLE);
+                             Cursor cursor_d=mydb.fetchPersonal();
+                             adapter.changeCursor(cursor_d);
+                         }
+                         drawerLayout.closeDrawer(GravityCompat.START);
+                         return true;
 
+                     case R.id.settings_nav_id:
+                         Toast.makeText(MainActivity.this,"Under Construction, you will see this soon",Toast.LENGTH_SHORT).show();
+                         drawerLayout.closeDrawer(GravityCompat.START);
+                         return true;
+                     case R.id.share_nav_id:
+                         Intent share_app=new Intent(Intent.ACTION_SEND);
+                         share_app.setType("text/plain");
+                         share_app.putExtra(Intent.EXTRA_SUBJECT,R.string.app_name);
+                         String m="\nCheck out CS Notes\n\n";
+                         m += "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + " \n\n";
+                         share_app.putExtra(Intent.EXTRA_TEXT,m);
+                         startActivity(Intent.createChooser(share_app,"choose one"));
+                         Toast toast=Toast.makeText(MainActivity.this,"Thank You...",Toast.LENGTH_LONG);
+                         toast.setGravity(Gravity.CENTER,0,0);
+                         toast.show();
+
+                         return true;
+                     case R.id.rate_nav_id:
+                         Toast t=Toast.makeText(MainActivity.this,"Thank You...",Toast.LENGTH_LONG);
+                         t.setGravity(Gravity.CENTER,0,0);
+                         t.show();
+                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=sunny.app.csnotes")));
+                         return true;
+
+                 }
+                 return false;
+            }
+        });
+
+    }
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        toggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        toggle.syncState();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu,menu);
-
-
         return true;
     }
 
+
+
     @Override
-    protected void onResume() {
+    protected void onStart() {
         adapter.notifyDataSetChanged();
-        super.onResume();
+        super.onStart();
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        super.onOptionsItemSelected(item);
 
         switch (item.getItemId()){
             case R.id.all_notes_m:
@@ -297,7 +406,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.changeCursor(cursor_d);
     }
     public void change_to_fav(){
-        setTitle(favourites_t);
+        toolbar.setTitle(favourites_t);
         fab_add.setVisibility(View.GONE);
         if(!mydb.haveState("2")){
             list_li.setVisibility(View.INVISIBLE);
@@ -317,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void change_to_deleted(){
         fab_add.setVisibility(View.GONE);
-        setTitle(deleted_t);
+        toolbar.setTitle(deleted_t);
         if(!mydb.haveState("3")){
             list_li.setVisibility(View.INVISIBLE);
             mylist.setVisibility(View.INVISIBLE);
@@ -335,8 +444,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void change_to_all(){
-        setTitle(all_notes_t);
-        if(mydb.haveState("1") || mydb.haveState("2")){
+        toolbar.setTitle(all_notes_t);
+        if(mydb.haveState("1") || mydb.haveState("2") || mydb.haveState("4") || mydb.haveState("5") || mydb.haveState("6") || mydb.haveState("7")){
             list_li.setVisibility(View.VISIBLE);
             mylist.setVisibility(View.VISIBLE);
             nonote_li.setVisibility(View.INVISIBLE);
@@ -354,10 +463,87 @@ public class MainActivity extends AppCompatActivity {
         fab_add.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void onBackPressed() {
 
-        super.onBackPressed();
+    public void change_to_home(){
+        toolbar.setTitle(R.string.home_cat);
+        fab_add.setVisibility(View.GONE);
+        if(!mydb.haveState("4")){
+            list_li.setVisibility(View.INVISIBLE);
+            mylist.setVisibility(View.INVISIBLE);
+            nonote_li.setVisibility(View.VISIBLE);
+            no_image.setVisibility(View.VISIBLE);
+            no_note.setVisibility(View.VISIBLE);
+        }
+        else {
+            list_li.setVisibility(View.VISIBLE);
+            mylist.setVisibility(View.VISIBLE);
+            nonote_li.setVisibility(View.INVISIBLE);
+            no_image.setVisibility(View.INVISIBLE);
+            no_note.setVisibility(View.INVISIBLE);
+            Cursor cursor=mydb.fetchCat("4");
+            adapter.changeCursor(cursor);
+
+        }
+    }
+    public void change_to_work(){
+        toolbar.setTitle(R.string.work_cat);
+        fab_add.setVisibility(View.GONE);
+        if(!mydb.haveState("5")){
+            list_li.setVisibility(View.INVISIBLE);
+            mylist.setVisibility(View.INVISIBLE);
+            nonote_li.setVisibility(View.VISIBLE);
+            no_image.setVisibility(View.VISIBLE);
+            no_note.setVisibility(View.VISIBLE);
+        }
+        else {
+            list_li.setVisibility(View.VISIBLE);
+            mylist.setVisibility(View.VISIBLE);
+            nonote_li.setVisibility(View.INVISIBLE);
+            no_image.setVisibility(View.INVISIBLE);
+            no_note.setVisibility(View.INVISIBLE);
+            Cursor cursor=mydb.fetchCat("5");
+            adapter.changeCursor(cursor);
+        }
+    }
+    public void change_to_edu(){
+        toolbar.setTitle(R.string.education_cat);
+        fab_add.setVisibility(View.GONE);
+        if(!mydb.haveState("6")){
+            list_li.setVisibility(View.INVISIBLE);
+            mylist.setVisibility(View.INVISIBLE);
+            nonote_li.setVisibility(View.VISIBLE);
+            no_image.setVisibility(View.VISIBLE);
+            no_note.setVisibility(View.VISIBLE);
+        }
+        else {
+            list_li.setVisibility(View.VISIBLE);
+            mylist.setVisibility(View.VISIBLE);
+            nonote_li.setVisibility(View.INVISIBLE);
+            no_image.setVisibility(View.INVISIBLE);
+            no_note.setVisibility(View.INVISIBLE);
+            Cursor cursor=mydb.fetchCat("6");
+            adapter.changeCursor(cursor);
+        }
+    }
+    public void change_to_other(){
+        toolbar.setTitle(R.string.other_cat);
+        fab_add.setVisibility(View.GONE);
+        if(!mydb.haveState("7")){
+            list_li.setVisibility(View.INVISIBLE);
+            mylist.setVisibility(View.INVISIBLE);
+            nonote_li.setVisibility(View.VISIBLE);
+            no_image.setVisibility(View.VISIBLE);
+            no_note.setVisibility(View.VISIBLE);
+        }
+        else {
+            list_li.setVisibility(View.VISIBLE);
+            mylist.setVisibility(View.VISIBLE);
+            nonote_li.setVisibility(View.INVISIBLE);
+            no_image.setVisibility(View.INVISIBLE);
+            no_note.setVisibility(View.INVISIBLE);
+            Cursor cursor=mydb.fetchCat("7");
+            adapter.changeCursor(cursor);
+        }
     }
 }
 

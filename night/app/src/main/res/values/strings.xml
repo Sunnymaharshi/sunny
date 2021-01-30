@@ -14,4 +14,16 @@
     <string name="restore">restore</string>
     <string name="restore_deleted">Restore Deleted</string>
     <string name="todo">TODO</string>
+    <string name="home_cat">Home</string>
+    <string name="work_cat">Work</string>
+    <string name="education_cat">Education</string>
+    <string name="personal_cat">Personal</string>
+    <string name="other_cat">Other</string>
+    <string name="categories_title">Categories</string>
+    <string name="settings_str">Settings</string>
+    <string name="category_bt_n">Category</string>
+    <string name="todo1">TODO</string>
+    <string name="nav_open_des">nav opened</string>
+    <string name="nav_close_des">nav closed</string>
+
 </resources>

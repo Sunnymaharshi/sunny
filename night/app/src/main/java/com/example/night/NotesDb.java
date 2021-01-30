@@ -101,7 +101,7 @@ public class NotesDb extends SQLiteOpenHelper {
     }
     public void restore_del(){
         SQLiteDatabase db=this.getWritableDatabase();
-        db.execSQL("update "+TableName+" set state=1 where state!=2");
+        db.execSQL("update "+TableName+" set state=1 where state=3");
     }
     public boolean haveState(String state){
         SQLiteDatabase db1=this.getReadableDatabase();
@@ -138,7 +138,7 @@ public class NotesDb extends SQLiteOpenHelper {
     }
     public Cursor fetchAll(){
         SQLiteDatabase db=this.getReadableDatabase();
-        Cursor cursor=db.rawQuery("select * from "+TableName+" where state=1 or state=2  order by _id DESC ;",null);
+        Cursor cursor=db.rawQuery("select * from "+TableName+" where state!=3 and state!=8 order by _id DESC ;",null);
         if(cursor!=null){
             cursor.moveToFirst();
         }
@@ -160,6 +160,24 @@ public class NotesDb extends SQLiteOpenHelper {
         }
         return cursor;
     }
+    public Cursor fetchCat(String state){
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor=db.rawQuery("select * from "+TableName+" where state="+state+" order by _id DESC ;",null);
+        if(cursor!=null){
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+    public Cursor fetchPersonal(){
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor=db.rawQuery("select * from "+TableName+" where state=8 order by _id DESC ;",null);
+        if(cursor!=null){
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+
     public int getMaxId(){
         int id=0;
         SQLiteDatabase db=this.getReadableDatabase();

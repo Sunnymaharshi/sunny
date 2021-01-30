@@ -1,5 +1,6 @@
 package com.example.night;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,9 +15,16 @@ import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +40,9 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.nio.file.LinkOption;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class DisplayNote extends AppCompatActivity {
@@ -49,6 +59,7 @@ public class DisplayNote extends AppCompatActivity {
     private InterstitialAd ful_ad;
     int value_f_b;
     int state=1;
+    Boolean is_spinTouch;
 
 
     @Override
@@ -62,6 +73,104 @@ public class DisplayNote extends AppCompatActivity {
         datetime=findViewById(R.id.date_time_view);
         fav_i=bottomNavigationView.getMenu();
         mydb=new NotesDb(DisplayNote.this);
+        Spinner spinner= findViewById(R.id.spinner_ed);
+        List<String> categories = new ArrayList<String>();
+        categories.add("Normal");
+        categories.add("Home");
+        categories.add("Work");
+        categories.add("Education");
+        categories.add("Other");
+        categories.add("Personal");
+        ArrayAdapter<String> cat_data= new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, categories);
+        cat_data.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(cat_data);
+        is_spinTouch=false;
+        spinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                is_spinTouch =true;
+                return false;
+            }
+        });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(!is_spinTouch) return;
+                switch (position){
+                    case 0:
+                        if(id_To_Update==0 ){
+                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(mydb.getState(id_To_Update)!=1){
+                            if(mydb.changeState(id_To_Update,1)){
+                                Toast.makeText(DisplayNote.this,"added to Normal",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        break;
+                    case 1:
+                        if(id_To_Update==0 ){
+                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            if(mydb.changeState(id_To_Update,4)){
+                                Toast.makeText(DisplayNote.this,"added to Home",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        break;
+                    case 2:
+                        if(id_To_Update==0 ){
+                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            if(mydb.changeState(id_To_Update,5)){
+                                Toast.makeText(DisplayNote.this,"added to Work",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        break;
+                    case 3:
+                        if(id_To_Update==0 ){
+                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            if(mydb.changeState(id_To_Update,6)){
+                                Toast.makeText(DisplayNote.this,"added to Education",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        break;
+                    case 4:
+                        if(id_To_Update==0 ){
+                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            if(mydb.changeState(id_To_Update,7)){
+                                Toast.makeText(DisplayNote.this,"added to Other",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        break;
+                    case 5:
+                        if(id_To_Update==0 ){
+                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            if(mydb.changeState(id_To_Update,8)){
+                                Toast.makeText(DisplayNote.this,"added to Personal",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        break;
+
+
+
+
+
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         note.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -88,7 +197,6 @@ public class DisplayNote extends AppCompatActivity {
             }
         });
         //note.setMovementMethod(LinkMovementMethod.getInstance());
-
         Bundle extras=getIntent().getExtras();
         /*ful_ad= new InterstitialAd(this);
         ful_ad.setAdUnitId("ca-app-pub-6480892200440742/6448278105");
@@ -117,6 +225,26 @@ public class DisplayNote extends AppCompatActivity {
                 datetime.setText(date_time_v);
                 note.setText(contents);
                 changeFavIcon(id_To_Update);
+                switch (state){
+                    case 1:
+                        spinner.setSelection(0);
+                        break;
+                    case 4:
+                        spinner.setSelection(1);
+                        break;
+                    case 5:
+                        spinner.setSelection(2);
+                        break;
+                    case 6:
+                        spinner.setSelection(3);
+                        break;
+                    case 7:
+                        spinner.setSelection(4);
+                        break;
+                    case 8:
+                        spinner.setSelection(5);
+                        break;
+                }
             }
             else {
                 if(value_f_b==-3){
@@ -193,16 +321,16 @@ public class DisplayNote extends AppCompatActivity {
                            if(id_To_Update==0 ){
                                Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
                            }
-                           else if(mydb.getState(id_To_Update)==1 || mydb.getState(id_To_Update)==3){
-                               if(mydb.changeState(id_To_Update,2)){
-                                   changeFavIcon(id_To_Update);
-                                   Toast.makeText(DisplayNote.this,"added to favourites",Toast.LENGTH_SHORT).show();
-                               }
-                           }
                            else  if(mydb.getState(id_To_Update)==2){
                                if(mydb.changeState(id_To_Update,1)){
                                    changeFavIcon(id_To_Update);
                                    Toast.makeText(DisplayNote.this,"removed from favourites",Toast.LENGTH_SHORT).show();
+                               }
+                           }
+                           else {
+                               if(mydb.changeState(id_To_Update,2)){
+                                   changeFavIcon(id_To_Update);
+                                   Toast.makeText(DisplayNote.this,"added to favourites",Toast.LENGTH_SHORT).show();
                                }
                            }
                             return true;
@@ -227,7 +355,7 @@ public class DisplayNote extends AppCompatActivity {
                             if(id_To_Update==0){
                                 Toast.makeText(DisplayNote.this,"not saved yet",Toast.LENGTH_LONG).show();
                             }
-                            else if(mydb.getState(id_To_Update)==1 || mydb.getState(id_To_Update)==2){
+                            else if(mydb.getState(id_To_Update)!=3){
 
 
                                 if(value_f_b==-3 || value_f_b==-1){
@@ -240,6 +368,18 @@ public class DisplayNote extends AppCompatActivity {
                                 }
                                 else if(mydb.getState(id_To_Update)==2){
                                     state.putString("state","a");
+                                }
+                                else if(mydb.getState(id_To_Update)==4){
+                                    state.putString("state","h");
+                                }
+                                else if(mydb.getState(id_To_Update)==5){
+                                    state.putString("state","w");
+                                }
+                                else if(mydb.getState(id_To_Update)==6){
+                                    state.putString("state","e");
+                                }
+                                else if(mydb.getState(id_To_Update)==7){
+                                    state.putString("state","o");
                                 }
                                 mydb.changeState(id_To_Update,3);
                                 Toast.makeText(DisplayNote.this,"moved to deleted notes",Toast.LENGTH_LONG).show();
@@ -310,6 +450,18 @@ public class DisplayNote extends AppCompatActivity {
                 }
                 else if(mydb.getState(id_To_Update)==3){
                     state.putString("state","d");
+                }
+                else if(mydb.getState(id_To_Update)==4){
+                    state.putString("state","h");
+                }
+                else if(mydb.getState(id_To_Update)==5){
+                    state.putString("state","w");
+                }
+                else if(mydb.getState(id_To_Update)==6){
+                    state.putString("state","e");
+                }
+                else if(mydb.getState(id_To_Update)==7){
+                    state.putString("state","o");
                 }
                 intent.putExtras(state);
                 startActivity(intent);

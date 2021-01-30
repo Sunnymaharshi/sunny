@@ -9,32 +9,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/date_time_view"
-            android:layout_gravity="top"
-            android:textColor="@color/grey"
-            android:gravity="top|end"
-            android:layout_marginBottom="3dp"/>
-        <EditText
-            android:inputType="textMultiLine"
-            android:id="@+id/note_view"
+            android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinner_ed"
+                android:layout_width="wrap_content"
+                android:prompt="@string/categories_title"
+                android:padding="2dp"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:layout_gravity="start|top"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/date_time_view"
+                android:layout_gravity="top|end"
+                android:layout_weight="1"
+                android:padding="3dp"
+                android:textColor="@color/grey"
+                android:gravity="right" />
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:autoLink="all"
-            android:linksClickable="true"
-            android:visibility="visible"
-            android:textColor="@color/black"
-            android:padding="9dp"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:layout_gravity="top|start"
-            android:hint="@string/your_notes_hint"
-            android:textColorHint="@color/grey"
-            android:gravity="top|start"
-            android:importantForAutofill="no" />
+            android:orientation="vertical">
 
-
+            <EditText
+                android:inputType="textMultiLine"
+                android:id="@+id/note_view"
+                android:layout_width="match_parent"
+                android:autoLink="all"
+                android:linksClickable="true"
+                android:visibility="visible"
+                android:textColor="@color/black"
+                android:padding="9dp"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:layout_gravity="top|start"
+                android:hint="@string/your_notes_hint"
+                android:textColorHint="@color/grey"
+                android:gravity="top|start"
+                android:importantForAutofill="no" />
+        </LinearLayout>
     </LinearLayout>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"

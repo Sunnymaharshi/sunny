@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/cats_title"
+        android:title="@string/categories_title"
+        />
+    <group android:id="@+id/category_grp">
+
+        <item
+            android:id="@+id/home_cat"
+            android:icon="@drawable/ic_baseline_home_work_24"
+            android:iconTint="@color/black"
+            android:title="@string/home_cat"/>
+        <item android:id="@+id/work_cat"
+            android:title="@string/work_cat"
+            android:icon="@drawable/ic_baseline_work_24"
+            android:iconTint="@color/black"/>
+        <item android:id="@+id/education_cat"
+            android:icon="@drawable/ic_baseline_menu_book_24"
+            android:iconTint="@color/black"
+            android:title="@string/education_cat" />
+        <item android:id="@+id/other_cat"
+            android:icon="@drawable/ic_baseline_notes_24"
+            android:iconTint="@color/black"
+            android:title="@string/other_cat" />
+        <item android:id="@+id/personal_cat"
+            android:icon="@drawable/ic_baseline_person_24"
+            android:title="@string/personal_cat"
+            android:iconTint="@color/black"/>
+    </group>
+    <item
+        android:id="@+id/settings_nav_id"
+        android:title="@string/settings_str"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:iconTint="@color/black"/>
+    <item android:id="@+id/rate_nav_id"
+        android:title="Rate this app"
+        android:icon="@drawable/fav_ful"
+        android:iconTint="@color/black"/>
+    <item android:id="@+id/share_nav_id"
+        android:title="Share App"
+        android:icon="@drawable/share_b"
+        android:iconTint="@color/black"/>
+
+
+
+</menu>
