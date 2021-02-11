@@ -51,7 +51,6 @@ public class DisplayNote extends AppCompatActivity {
     String editNote_t="Edit Note";
     private MainActivity mainActivity;
     EditText note;
-    /*TextView note_text_view_v;*/
     TextView datetime;
     Menu fav_i;
     BottomNavigationView bottomNavigationView;
@@ -467,50 +466,7 @@ public class DisplayNote extends AppCompatActivity {
                 startActivity(intent);
             }
             finish();
-            /*if(ful_ad.isLoaded()){
-                ful_ad.show();
-            }
-            else{
-                Bundle state =new Bundle();
-                if(value_f_b>=0){
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    if(mydb.getState(id_To_Update)==1){
-                        state.putString("state","a");
-                    }
-                    else if(mydb.getState(id_To_Update)==2){
-                        state.putString("state","a");
-                    }
-                    else if(mydb.getState(id_To_Update)==3){
-                        state.putString("state","d");
-                    }
-                    intent.putExtras(state);
-                    startActivity(intent);
-                }
-                finish();
 
-            }
-            ful_ad.setAdListener(new AdListener(){
-                @Override
-                public void onAdClosed() {
-                    super.onAdClosed();
-                    Bundle state =new Bundle();
-                    if(value_f_b>=0){
-                        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                        if(mydb.getState(id_To_Update)==1){
-                            state.putString("state","a");
-                        }
-                        else if(mydb.getState(id_To_Update)==2){
-                            state.putString("state","a");
-                        }
-                        else if(mydb.getState(id_To_Update)==3){
-                            state.putString("state","d");
-                        }
-                        intent.putExtras(state);
-                        startActivity(intent);
-                    }
-                    finish();
-                }
-            });*/
 
         }
         else {
@@ -544,9 +500,7 @@ public class DisplayNote extends AppCompatActivity {
 
                 }
             });
-                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    Objects.requireNonNull(alertDialog.getWindow()).getAttributes().gravity= BOTTOM;
-                }*/
+
             alertDialog.show();
         }
     }
@@ -591,7 +545,7 @@ public class DisplayNote extends AppCompatActivity {
                 }
             }
         }
-        /*mainActivity.refreshList();*/
+
     }
 
 

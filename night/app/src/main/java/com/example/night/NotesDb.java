@@ -191,22 +191,7 @@ public class NotesDb extends SQLiteOpenHelper {
         return id;
 
     }
-   /*   public ArrayList getAll() {
-        ArrayList array_list = new ArrayList();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from " + TableName, null);
-        res.moveToFirst();
-        while (!res.isAfterLast()) {
-            array_list.add(res.getString(res.getColumnIndex("_id")));
-            array_list.add(res.getString(res.getColumnIndex("notes")));
-            array_list.add(res.getString(res.getColumnIndex("time")));
-            array_list.add(res.getString(res.getColumnIndex("date")));
-            array_list.add(res.getString(res.getColumnIndex("state")));
-            res.moveToNext();
-        }
-        res.close();
-        return array_list;
-    } */
+
 
 
 }

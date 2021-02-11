@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.night">
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/myicon"
@@ -11,14 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true"
         tools:ignore="HardcodedDebugMode">
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6480892200440742~2918250724"/>
-
-        <activity android:name=".recieveInfo"
-            android:hardwareAccelerated="false">
+        <activity android:name=".recieveInfo">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -29,8 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:hardwareAccelerated="true">
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,8 +30,7 @@
         </activity>
         <activity
             android:name=".DisplayNote"
-            android:parentActivityName=".MainActivity"
-            android:hardwareAccelerated="true">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
