@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "193470070571",
+    "project_id": "sunny-csnotes",
+    "storage_bucket": "sunny-csnotes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193470070571:android:1b1361e78624f259594f6e",
+        "android_client_info": {
+          "package_name": "sunny.app.csnotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "193470070571-bdvd4b20o7oao455uobdg0n986oaam56.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIclRcLcqf0tCoglJ4GQTmtNNYWhTvRCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193470070571-bdvd4b20o7oao455uobdg0n986oaam56.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
