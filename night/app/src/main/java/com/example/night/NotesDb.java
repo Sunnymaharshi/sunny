@@ -1,4 +1,5 @@
 package com.example.night;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,19 +9,17 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
-
 
 
 
 public class NotesDb extends SQLiteOpenHelper {
-    public static final String DatabaseName="Notes.db";
-    public static final String TableName="Notes_Table";
-    public static final String Notes_C="notes";
-    public static final String Id="_id";
-    public static final String Date_C="date";
-    public static final String Time_C="time";
-    public static final String State_C="state";
+public static final String DatabaseName="Notes.db";
+public static final String TableName="Notes_Table";
+public static final String Notes_C="notes";
+public static final String Id="_id";
+public static final String Date_C="date";
+public static final String Time_C="time";
+public static final String State_C="state";
 
 
 

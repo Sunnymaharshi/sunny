@@ -1,6 +1,5 @@
 package com.example.night;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,20 +9,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,12 +28,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.nio.file.LinkOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,7 +46,6 @@ public class DisplayNote extends AppCompatActivity {
     Menu fav_i;
     BottomNavigationView bottomNavigationView;
     int id_To_Update;
-    private InterstitialAd ful_ad;
     int value_f_b;
     int state=1;
     Boolean is_spinTouch;
@@ -72,7 +62,7 @@ public class DisplayNote extends AppCompatActivity {
         datetime=findViewById(R.id.date_time_view);
         fav_i=bottomNavigationView.getMenu();
         mydb=new NotesDb(DisplayNote.this);
-        Spinner spinner= findViewById(R.id.spinner_ed);
+        final Spinner spinner= findViewById(R.id.spinner_ed);
         List<String> categories = new ArrayList<String>();
         categories.add("Normal");
         categories.add("Home");
@@ -99,6 +89,7 @@ public class DisplayNote extends AppCompatActivity {
                     case 0:
                         if(id_To_Update==0 ){
                             Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            spinner.setSelection(0);
                         }
                         else if(mydb.getState(id_To_Update)!=1){
                             if(mydb.changeState(id_To_Update,1)){
@@ -109,6 +100,7 @@ public class DisplayNote extends AppCompatActivity {
                     case 1:
                         if(id_To_Update==0 ){
                             Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            spinner.setSelection(0);
                         }
                         else {
                             if(mydb.changeState(id_To_Update,4)){
@@ -119,6 +111,7 @@ public class DisplayNote extends AppCompatActivity {
                     case 2:
                         if(id_To_Update==0 ){
                             Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            spinner.setSelection(0);
                         }
                         else {
                             if(mydb.changeState(id_To_Update,5)){
@@ -129,6 +122,7 @@ public class DisplayNote extends AppCompatActivity {
                     case 3:
                         if(id_To_Update==0 ){
                             Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            spinner.setSelection(0);
                         }
                         else {
                             if(mydb.changeState(id_To_Update,6)){
@@ -139,6 +133,7 @@ public class DisplayNote extends AppCompatActivity {
                     case 4:
                         if(id_To_Update==0 ){
                             Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            spinner.setSelection(0);
                         }
                         else {
                             if(mydb.changeState(id_To_Update,7)){
@@ -149,6 +144,7 @@ public class DisplayNote extends AppCompatActivity {
                     case 5:
                         if(id_To_Update==0 ){
                             Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            spinner.setSelection(0);
                         }
                         else {
                             if(mydb.changeState(id_To_Update,8)){
@@ -195,12 +191,8 @@ public class DisplayNote extends AppCompatActivity {
                 Linkify.addLinks(s,Linkify.ALL);
             }
         });
-        //note.setMovementMethod(LinkMovementMethod.getInstance());
         Bundle extras=getIntent().getExtras();
-        /*ful_ad= new InterstitialAd(this);
-        ful_ad.setAdUnitId("ca-app-pub-6480892200440742/6448278105");
-        AdRequest ful_adr= new AdRequest.Builder().build();
-        ful_ad.loadAd(ful_adr);*/
+
         if(extras!=null){
             value_f_b=extras.getInt("id");
             if(value_f_b==-3){
@@ -220,7 +212,6 @@ public class DisplayNote extends AppCompatActivity {
                 if (!rs.isClosed()) {
                     rs.close();
                 }
-              /*  note_text_view_v.setText(contents);*/
                 datetime.setText(date_time_v);
                 note.setText(contents);
                 changeFavIcon(id_To_Update);

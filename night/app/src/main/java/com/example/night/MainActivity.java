@@ -1,12 +1,20 @@
 package com.example.night;
+
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,19 +27,31 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
-
-import com.google.android.gms.ads.AdView;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.IntentCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -45,14 +65,12 @@ public class MainActivity extends AppCompatActivity {
     String all_notes_t="All Notes";
     String favourites_t="My Favourites";
     String deleted_t="Deleted Notes";
-    String noFav="No favourites";
-    String noDel="No deleted Notes";
-    String noNote="No notes";
     int main_state;
     Bundle main_bun ;
     NavigationView navigationView;
     Toolbar toolbar;
     ActionBarDrawerToggle toggle;
+    DrawerLayout drawerLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,11 +79,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle(all_notes_t);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(all_notes_t);
-        final DrawerLayout drawerLayout=findViewById(R.id.drawer_lay_main);
+        drawerLayout=findViewById(R.id.drawer_lay_main);
         toggle=new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.nav_open_des,R.string.nav_close_des);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
-
         main_state=0;
         main_bun=getIntent().getExtras();
         navigationView=findViewById(R.id.main_nav_view_id);
@@ -202,8 +219,8 @@ public class MainActivity extends AppCompatActivity {
                          Intent share_app=new Intent(Intent.ACTION_SEND);
                          share_app.setType("text/plain");
                          share_app.putExtra(Intent.EXTRA_SUBJECT,R.string.app_name);
-                         String m="\nCheck out CS Notes\n\n";
-                         m += "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID + " \n\n";
+                         String m="Check out CS Notes\n";
+                         m += "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID ;
                          share_app.putExtra(Intent.EXTRA_TEXT,m);
                          startActivity(Intent.createChooser(share_app,"choose one"));
                          Toast toast=Toast.makeText(MainActivity.this,"Thank You...",Toast.LENGTH_LONG);
@@ -224,6 +241,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void onBackPressed() {
+        if(this.drawerLayout.isDrawerOpen(GravityCompat.START)){
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+        }
+        else{
+            super.onBackPressed();
+        }
+    }
+
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -285,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.delete_all:
                 if(mydb.haveEntries()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                    builder.setMessage("You can't recover again!!!");
+                    builder.setMessage("You can't recover again!!!\nPlease export your database for future usage");
                     builder.setIcon(R.drawable.delete_forever);
                     builder.setTitle("Delete everything");
                     builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -370,7 +398,61 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "There's nothing to clear", Toast.LENGTH_SHORT).show();
                 }
                 return true;
+            case R.id.export_db_id :
+                if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(MainActivity.this, "need storage access permission to save database!!!", Toast.LENGTH_LONG).show();
+                    ActivityCompat.requestPermissions(MainActivity.this,new String[]  { Manifest.permission.WRITE_EXTERNAL_STORAGE }, 3);
+                }
+                else {
+                    File folder = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),"/CS Notes");
+                    if(!folder.exists()){
+                        folder.mkdirs();
+                    }
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat tf=new SimpleDateFormat(" hh:mm a", Locale.US);
+                    String timeString=tf.format(c.getTime());
+                    SimpleDateFormat df = new SimpleDateFormat(" ddMMMYYY",Locale.US);
+                    String dateString= df.format(c.getTime());
+                    String date_time=dateString+timeString;
+                    File data = Environment.getDataDirectory();
+                    FileChannel source  = null;
+                    FileChannel destination = null;
+                    String currentDBPath="/data/sunny.app.csnotes/databases/Notes.db";
+                    String backupDBPath= date_time+"_Notes.db";
+                    File  currentDB= new File(data,currentDBPath);
+                    File backupDB= new File(folder,backupDBPath);
+                    if(!backupDB.exists()){
+                        try {
+                            backupDB.createNewFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
 
+                        }
+                    }
+                    try {
+                        source= new FileInputStream(currentDB).getChannel();
+                        destination=new FileOutputStream(backupDB).getChannel();
+                        destination.transferFrom(source,0,source.size());
+                        source.close();
+                        destination.close();
+                        Toast toast=Toast.makeText(getBaseContext(), "Saved in CS Notes folder\n"+backupDB.getPath(), Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.CENTER,0,0);
+                        toast.show();
+                    }
+                    catch (IOException e){
+                        Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                return true;
+            case R.id.import_db_id :
+
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*");
+                startActivityForResult(intent,3333);
+                return true;
         }
         return false;
 
@@ -526,6 +608,61 @@ public class MainActivity extends AppCompatActivity {
             Cursor cursor=mydb.fetchCat("7");
             adapter.changeCursor(cursor);
         }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 3333 && resultCode == Activity.RESULT_OK) {
+            InputStream ip= null;
+            try {
+                ip = getContentResolver().openInputStream(data.getData());
+            } catch (FileNotFoundException e) {
+                Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+            }
+
+            try {
+
+                File data1 = Environment.getDataDirectory();
+                String currentDBPath = "/data/" + "sunny.app.csnotes"
+                        + "/databases/" + "Notes.db";
+
+                File backupDB = new File(data1, currentDBPath);
+                if(backupDB.exists()){
+                    backupDB.delete();
+                    backupDB = new File(data1, currentDBPath);
+                }
+                OutputStream outputStream= new FileOutputStream(backupDB);
+                byte[] buffer = new byte[100*1024];
+                int read;
+                while ((read=ip.read(buffer))!=-1){
+                    outputStream.write(buffer,0,read);
+                }
+                outputStream.flush();
+
+                Toast.makeText(getApplicationContext(), "Imported Successful!",
+                        Toast.LENGTH_LONG).show();
+                Intent restart = new Intent( MainActivity.this, MainActivity.class);
+                finish();
+                startActivity(restart);
+
+
+            } catch (Exception e) {
+
+                Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_LONG)
+                        .show();
+
+            }
+            finally {
+                try {
+                    ip.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getBaseContext(), e.toString(), Toast.LENGTH_LONG).show();
+
+                }
+            }
+        }
+
     }
 }
 

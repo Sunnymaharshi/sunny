@@ -25,5 +25,7 @@
     <string name="todo1">TODO</string>
     <string name="nav_open_des">nav opened</string>
     <string name="nav_close_des">nav closed</string>
+    <string name="import_database">Import Database</string>
+    <string name="export_database">Export Database</string>
 
 </resources>

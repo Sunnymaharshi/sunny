@@ -27,10 +27,20 @@
         android:orderInCategory="1"
         android:icon="@drawable/no_note"/>
     <item
+        android:id="@+id/import_db_id"
+        android:title="@string/import_database"
+        app:showAsAction="never"
+        android:orderInCategory="6" />
+    <item
+        android:id="@+id/export_db_id"
+        android:title="@string/export_database"
+        app:showAsAction="never"
+        android:orderInCategory="7" />
+    <item
         android:id="@+id/delete_all"
         android:title="@string/delete_all"
         app:showAsAction="never"
-        android:orderInCategory="6" />
+        android:orderInCategory="8" />
     <item
         android:id="@+id/restore_del"
         android:title="@string/restore_deleted"
