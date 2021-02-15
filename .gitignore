@@ -1,7 +1,7 @@
 #built application files
 *.apk
 *.ap_
-
+*.abb
 *.md
 # files for the dex VM
 *.dex
