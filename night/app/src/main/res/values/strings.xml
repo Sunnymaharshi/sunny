@@ -5,14 +5,14 @@
     <string name="share_">share</string>
     <string name="delete_">delete</string>
     <string name="save_tb">save</string>
-    <string name="deleted_notes_m_r">Deleted Notes</string>
-    <string name="my_favourites_m_r">My Favourites</string>
+    <string name="deleted_notes_m_r">Trash</string>
+    <string name="my_favourites_m_r">Favourites</string>
     <string name="all_notes_m_r">All Notes</string>
     <string name="no_notes_s">No Notes</string>
     <string name="delete_all">Delete Everything</string>
-    <string name="clear_all">Clear Deleted</string>
+    <string name="clear_all">Clear Trash</string>
     <string name="restore">restore</string>
-    <string name="restore_deleted">Restore Deleted</string>
+    <string name="restore_deleted">Restore from Trash</string>
     <string name="todo">TODO</string>
     <string name="home_cat">Home</string>
     <string name="work_cat">Work</string>
@@ -25,7 +25,22 @@
     <string name="todo1">TODO</string>
     <string name="nav_open_des">nav opened</string>
     <string name="nav_close_des">nav closed</string>
+
+    <string name="archived_cat">Archived</string>
+    <string name="unarchive">unarchive</string>
+    <string name="archive">archive</string>
+    <string name="search">Search</string>
+    <string name="set">Set</string>
+    <string name="trash">Trash</string>
+    <string name="set_remainder">Set Reminder</string>
+    <string name="remainders">Reminders</string>
     <string name="import_database">Import Database</string>
     <string name="export_database">Export Database</string>
+    <string name="all_notes">All Notes</string>
+    <string name="restore_from_trash">Restore from Trash</string>
+    <string name="delete_everything">Delete Everything</string>
+    <string name="share_app">Share App</string>
+    <string name="rate_this_app">Rate this app</string>
+    <string name="clear_trash">Clear Trash</string>
 
 </resources>

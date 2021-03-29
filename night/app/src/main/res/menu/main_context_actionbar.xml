@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/fav_view_con"
+        android:title="@string/favourite_"
+        android:icon="@drawable/fav_ful"
+        app:showAsAction="ifRoom"
+        />
+    <item android:id="@+id/share_view_con"
+        android:title="@string/share_"
+        android:icon="@drawable/share_b"
+        app:showAsAction="ifRoom"
+        />
+    <item android:id="@+id/delete_view_con"
+        android:icon="@drawable/delete"
+        app:showAsAction="ifRoom"
+        android:title="@string/delete_"/>
+    <item android:id="@+id/unfavorite_con"
+        android:icon="@drawable/star_b"
+        app:showAsAction="ifRoom"
+        android:title="unfavorite"/>
+
+    <item android:id="@+id/archive_con"
+        android:icon="@drawable/ic_baseline_archive_24"
+        android:title="@string/archive"
+        app:showAsAction="ifRoom"
+        android:iconTint="@color/black"
+        />
+    <item android:id="@+id/unarchive_con"
+        android:icon="@drawable/ic_baseline_unarchive_24"
+        android:title="@string/unarchive"
+        app:showAsAction="ifRoom"
+        android:iconTint="@color/black"
+        />
+    <item android:id="@+id/retore_con"
+        android:icon="@drawable/restore"
+        android:title="@string/restore"
+        app:showAsAction="ifRoom"
+        android:iconTint="@color/black"
+        />
+
+</menu>

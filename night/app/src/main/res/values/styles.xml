@@ -10,14 +10,18 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:navigationBarColor" tools:targetApi="lollipop">@android:color/transparent</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeBackground">@color/light_white</item>
     </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="actionOverflowButtonStyle">@style/DotsDarkTheme</item>
         <item name="android:textColorSecondary">@color/black</item>
         <item name="drawerArrowStyle">@style/DrawerArror3lines</item>
-
+        <item name="android:windowBackground">@drawable/splash_moon</item>
         <item name="windowNoTitle">true</item>
+        <item name="elevation">0dp</item>
+        <item name="colorAccent">@color/light_white</item>
     </style>
     <style name="DotsDarkTheme" parent="Widget.AppCompat.ActionButton.Overflow">
         <item name="android:tint">@color/black</item>

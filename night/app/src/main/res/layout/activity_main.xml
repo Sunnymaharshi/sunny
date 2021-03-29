@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
+    android:background="@color/light_white"
     tools:context=".MainActivity">
 
 
@@ -32,15 +33,6 @@
                 android:gravity="center"
                 android:visibility="gone"
                 tools:visibility="visible">
-
-                <!--<com.google.android.gms.ads.AdView
-                    android:id="@+id/ad_no_note"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    app:adSize="BANNER"
-                    app:adUnitId="ca-app-pub-6480892200440742/8469960309">
-                </com.google.android.gms.ads.AdView>-->
                 <ImageView
                     android:id="@+id/nonote_img"
                     android:layout_width="match_parent"
@@ -48,7 +40,6 @@
                     android:layout_gravity="center"
                     android:contentDescription="@string/todo"
                     android:scaleType="center"
-
                     android:src="@drawable/nono_main"
                     android:visibility="gone"
                     tools:visibility="visible" />
@@ -75,35 +66,20 @@
                 android:layout_gravity="center"
                 android:visibility="gone"
                 tools:visibility="visible">
-                <!--<com.google.android.gms.ads.AdView
-                    android:id="@+id/ad_li_top"
-                    xmlns:ads="http://schemas.android.com/apk/res-auto"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    ads:adSize="BANNER"
-                    android:layout_gravity="top"
-                    ads:adUnitId="ca-app-pub-6480892200440742/6623537926">
-                </com.google.android.gms.ads.AdView>-->
-                <ListView
 
+
+                <ListView
                     android:id="@+id/List_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@color/light_white"
                     android:dividerHeight="10dp"
                     android:scrollbars="none"
-
                     android:visibility="gone"
-                    tools:visibility="visible" />
-                <!--<com.google.android.gms.ads.AdView
-                    android:id="@+id/ad_li_bot"
-                    xmlns:ads="http://schemas.android.com/apk/res-auto"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    ads:adSize="BANNER"
-                    android:layout_gravity="bottom"
-                    ads:adUnitId="ca-app-pub-6480892200440742/2700604784">
-                </com.google.android.gms.ads.AdView>-->
+                    tools:visibility="visible" >
+                </ListView>
+
+
 
 
             </LinearLayout>

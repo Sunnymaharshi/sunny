@@ -21,15 +21,28 @@
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
                 android:layout_gravity="start|top"/>
-            <TextView
+            <ImageView
+                android:id="@+id/remind_off"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="13dp"
+                android:scaleType="centerCrop"
+                android:visibility="visible"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp"
+                android:layout_marginStart="13dp" />
+
+
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/date_time_view"
                 android:layout_gravity="top|end"
                 android:layout_weight="1"
                 android:padding="3dp"
                 android:textColor="@color/grey"
-                android:gravity="right" />
+                android:gravity="end" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

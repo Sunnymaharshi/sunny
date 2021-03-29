@@ -1,6 +1,10 @@
 package com.example.night;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,9 +22,12 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,6 +40,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +48,6 @@ public class DisplayNote extends AppCompatActivity {
     private NotesDb mydb;
     String my_note="My Notes";
     String editNote_t="Edit Note";
-    private MainActivity mainActivity;
     EditText note;
     TextView datetime;
     Menu fav_i;
@@ -49,7 +56,12 @@ public class DisplayNote extends AppCompatActivity {
     int value_f_b;
     int state=1;
     Boolean is_spinTouch;
-
+    String prev;
+    Bundle prevstate=new Bundle();
+    ImageView bell_off;
+    NotificationManager mNotificationManager;
+    public static final String NOTIFICATION_CHANNEL_ID="CS Notes:reminder notification channel";
+    Bundle extras;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,10 +73,68 @@ public class DisplayNote extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
         datetime=findViewById(R.id.date_time_view);
         fav_i=bottomNavigationView.getMenu();
+        bell_off=findViewById(R.id.remind_off);
+        bell_off.setImageResource(R.drawable.ic_baseline_notifications_24);
+        createNotificationChannel();
         mydb=new NotesDb(DisplayNote.this);
+        final View dialogView=View.inflate(DisplayNote.this,R.layout.date_time_picker,null);
+        final AlertDialog alertDialog=new AlertDialog.Builder(DisplayNote.this).create();
+        dialogView.findViewById(R.id.set_btn_id).setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                DatePicker datePicker=(DatePicker) dialogView.findViewById(R.id.date_picker_id);
+                TimePicker timePicker=(TimePicker) dialogView.findViewById(R.id.time_picker_id);
+
+                createRemind(new GregorianCalendar(datePicker.getYear(),datePicker.getMonth(),datePicker.getDayOfMonth(),
+                        timePicker.getHour(),timePicker.getMinute()));
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setView(dialogView);
+        bell_off.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(id_To_Update>0){
+                    if(mydb.getRemind(id_To_Update).equals("0")){
+                        alertDialog.show();
+                    }
+                    else {
+                        displayToast("Reminder set on\n"+mydb.getRemind(id_To_Update)+"\nLong click to cancel reminder",1);
+                    }
+                }
+                else {
+                    displayToast("Save the note before setting reminder",1);
+                }
+            }
+        });
+        bell_off.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (id_To_Update > 0) {
+                    if (mydb.getRemind(id_To_Update).equals("0")) {
+                        displayToast("Reminder Not Set",0);
+                        return true;
+                    } else {
+                        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
+                                id_To_Update, new Intent(DisplayNote.this, BroadcastRec.class), PendingIntent.FLAG_NO_CREATE);
+                        if (pendingIntent != null && alarmManager != null) {
+                            alarmManager.cancel(pendingIntent);
+                            bell_off.setImageResource(R.drawable.ic_baseline_notifications_24);
+                            displayToast("Reminder set on\n" + mydb.getRemind(id_To_Update) + "\nis deleted",1);
+                            mydb.updateRemind(id_To_Update, "0");
+                            return true;
+                        }
+                    }
+                }
+
+                return false;
+            }
+        });
         final Spinner spinner= findViewById(R.id.spinner_ed);
         List<String> categories = new ArrayList<String>();
-        categories.add("Normal");
+        categories.add("General");
         categories.add("Home");
         categories.add("Work");
         categories.add("Education");
@@ -88,75 +158,60 @@ public class DisplayNote extends AppCompatActivity {
                 switch (position){
                     case 0:
                         if(id_To_Update==0 ){
-                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            displayToast("Save the note",0);
                             spinner.setSelection(0);
                         }
                         else if(mydb.getState(id_To_Update)!=1){
-                            if(mydb.changeState(id_To_Update,1)){
-                                Toast.makeText(DisplayNote.this,"added to Normal",Toast.LENGTH_SHORT).show();
+                            if(mydb.changeState(id_To_Update,NotesDb.general)){
+                                displayToast("added to General",0);
                             }
                         }
                         break;
                     case 1:
                         if(id_To_Update==0 ){
-                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            displayToast("Save the note",0);
                             spinner.setSelection(0);
                         }
-                        else {
-                            if(mydb.changeState(id_To_Update,4)){
-                                Toast.makeText(DisplayNote.this,"added to Home",Toast.LENGTH_SHORT).show();
-                            }
+                        else if(mydb.changeState(id_To_Update,NotesDb.home)){
+                            displayToast("added to Home",0);
                         }
                         break;
                     case 2:
                         if(id_To_Update==0 ){
-                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            displayToast("Save the note",0);
                             spinner.setSelection(0);
                         }
-                        else {
-                            if(mydb.changeState(id_To_Update,5)){
-                                Toast.makeText(DisplayNote.this,"added to Work",Toast.LENGTH_SHORT).show();
-                            }
+                        else if(mydb.changeState(id_To_Update,NotesDb.work)){
+                            displayToast("added to Work",0);
                         }
                         break;
                     case 3:
                         if(id_To_Update==0 ){
-                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            displayToast("Save the note",0);
                             spinner.setSelection(0);
                         }
-                        else {
-                            if(mydb.changeState(id_To_Update,6)){
-                                Toast.makeText(DisplayNote.this,"added to Education",Toast.LENGTH_SHORT).show();
-                            }
+                        else if(mydb.changeState(id_To_Update,NotesDb.education)){
+                            displayToast("added to Education",0);
                         }
                         break;
                     case 4:
                         if(id_To_Update==0 ){
-                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            displayToast("Save the note",0);
                             spinner.setSelection(0);
                         }
-                        else {
-                            if(mydb.changeState(id_To_Update,7)){
-                                Toast.makeText(DisplayNote.this,"added to Other",Toast.LENGTH_SHORT).show();
-                            }
+                        else if(mydb.changeState(id_To_Update, NotesDb.other)){
+                            displayToast("added to Other",0);
                         }
                         break;
                     case 5:
                         if(id_To_Update==0 ){
-                            Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                            displayToast("Save the note",0);
                             spinner.setSelection(0);
                         }
-                        else {
-                            if(mydb.changeState(id_To_Update,8)){
-                                Toast.makeText(DisplayNote.this,"added to Personal",Toast.LENGTH_SHORT).show();
-                            }
+                        else if(mydb.changeState(id_To_Update,NotesDb.personal)){
+                            displayToast("added to Personal",0);
                         }
                         break;
-
-
-
-
-
                 }
             }
 
@@ -172,7 +227,6 @@ public class DisplayNote extends AppCompatActivity {
                 if(hasFocus){
                     setTitle(editNote_t);
                 }
-
             }
         });
         note.addTextChangedListener(new TextWatcher() {
@@ -180,21 +234,20 @@ public class DisplayNote extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 Linkify.addLinks(s,Linkify.ALL);
             }
         });
-        Bundle extras=getIntent().getExtras();
-
+        extras=getIntent().getExtras();
         if(extras!=null){
             value_f_b=extras.getInt("id");
+            prev=extras.getString("prev");
+            prevstate.putString("prev",prev);
             if(value_f_b==-3){
                 id_To_Update=0;
             }
@@ -202,19 +255,28 @@ public class DisplayNote extends AppCompatActivity {
                 id_To_Update=value_f_b;
             }
             if (id_To_Update > 0) {
+                if(!mydb.checkAvailability(id_To_Update)){
+                    finish();
+                }
                 Cursor rs = mydb.getData(id_To_Update);
                 rs.moveToFirst();
                 state=rs.getInt(rs.getColumnIndex(NotesDb.State_C));
                 String contents = rs.getString(rs.getColumnIndex(NotesDb.Notes_C));
-                String date = rs.getString(rs.getColumnIndex(NotesDb.Date_C));
-                String time = rs.getString(rs.getColumnIndex(NotesDb.Time_C));
-                String date_time_v=date+time;
+                String date_time_v = rs.getString(rs.getColumnIndex(NotesDb.Time_C));
                 if (!rs.isClosed()) {
                     rs.close();
                 }
+                if(PendingIntent.getBroadcast(getApplicationContext(),id_To_Update,
+                        new Intent(DisplayNote.this,BroadcastRec.class),PendingIntent.FLAG_NO_CREATE)!=null){
+                    bell_off.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                }
+                else {
+                    mydb.updateRemind(id_To_Update,"0");
+                    bell_off.setImageResource(R.drawable.ic_baseline_notifications_24);
+                }
                 datetime.setText(date_time_v);
                 note.setText(contents);
-                changeFavIcon(id_To_Update);
+                changeFavIcon(mydb.getState(id_To_Update));
                 switch (state){
                     case 1:
                         spinner.setSelection(0);
@@ -242,37 +304,43 @@ public class DisplayNote extends AppCompatActivity {
                     note.setText(data);
                 }
                 Calendar c = Calendar.getInstance();
-                SimpleDateFormat tf=new SimpleDateFormat(" hh:mm a", Locale.US);
+                SimpleDateFormat tf=new SimpleDateFormat("ddMMM yyyy hh:mm a", Locale.US);
                 String timeString=tf.format(c.getTime());
-                SimpleDateFormat df = new SimpleDateFormat(" ddMMM",Locale.US);
-                String dateString= df.format(c.getTime());
-                String date_time_v=dateString+timeString;
-                datetime.setText(date_time_v);
-
+                datetime.setText(timeString);
             }
-
-
         }
-
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            getMenuInflater().inflate(R.menu.save_menu, menu);
-
-        }
+        getMenuInflater().inflate(R.menu.save_menu, menu);
         return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem restore=menu.findItem(R.id.retore);
+        MenuItem unarchive=menu.findItem(R.id.unarchive);
+        MenuItem archive=menu.findItem(R.id.archive);
         if(state==3){
             restore.setVisible(true);
             return true;
         }
-        return super.onPrepareOptionsMenu(menu);
+        else{
+            if(id_To_Update>0){
+                if(mydb.getState(id_To_Update)==NotesDb.archived){
+                    unarchive.setVisible(true);
+                    return true;
+                }
+                else {
+                    archive.setVisible(true);
+                    return true;
+                }
+            }
+            else {
+                archive.setVisible(true);
+                return true;
+            }
+        }
     }
 
     @Override
@@ -287,14 +355,47 @@ public class DisplayNote extends AppCompatActivity {
             saveNote();
             return true;
         }
+        if(item.getItemId()==R.id.unarchive){
+            if(id_To_Update==0 ){
+                displayToast("Save the note",0);
+            }
+            else {
+                mydb.changeState(id_To_Update,NotesDb.general);
+                Intent intent=new Intent(DisplayNote.this,MainActivity.class);
+                intent.putExtras(prevstate);
+                displayToast("unarchived",0);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_out_bottom,R.anim.slide_in_bottom);
+                finish();
+                return true;
+            }
+
+        }
+        if(item.getItemId()==R.id.archive){
+            if(id_To_Update==0 ){
+                displayToast("Save the note",0);
+            }
+            else {
+                mydb.changeState(id_To_Update, NotesDb.archived);
+                Intent intent = new Intent(DisplayNote.this, MainActivity.class);
+                intent.putExtras(prevstate);
+                displayToast("archived",0);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_out_bottom,R.anim.slide_in_bottom);
+                finish();
+                return true;
+            }
+        }
         if(item.getItemId()==R.id.retore){
             saveNote();
-            mydb.changeState(id_To_Update,1);
-            Toast.makeText(DisplayNote.this,"note restored",Toast.LENGTH_SHORT).show();
+            mydb.changeState(id_To_Update,NotesDb.general);
+            displayToast("note restored",0);
             Intent intent=new Intent(DisplayNote.this,MainActivity.class);
+            intent.putExtras(prevstate);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_out_bottom,R.anim.slide_in_bottom);
             finish();
-
+            return true;
         }
         return super.onOptionsItemSelected(item);
 
@@ -307,30 +408,28 @@ public class DisplayNote extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     switch (item.getItemId()){
                         case R.id.fav_view:
-                           saveNote();
                            if(id_To_Update==0 ){
-                               Toast.makeText(DisplayNote.this,"first save the note",Toast.LENGTH_SHORT).show();
+                               displayToast("Save the note",0);
                            }
-                           else  if(mydb.getState(id_To_Update)==2){
-                               if(mydb.changeState(id_To_Update,1)){
-                                   changeFavIcon(id_To_Update);
-                                   Toast.makeText(DisplayNote.this,"removed from favourites",Toast.LENGTH_SHORT).show();
+                           else  if(mydb.getState(id_To_Update)==NotesDb.favorite){
+                               if(mydb.changeState(id_To_Update,NotesDb.general)){
+                                   changeFavIcon(mydb.getState(id_To_Update));
+                                   displayToast("removed from favourites",0);
                                }
                            }
-                           else {
-                               if(mydb.changeState(id_To_Update,2)){
-                                   changeFavIcon(id_To_Update);
-                                   Toast.makeText(DisplayNote.this,"added to favourites",Toast.LENGTH_SHORT).show();
+                           else{
+                               if(mydb.changeState(id_To_Update,NotesDb.favorite)){
+                                   changeFavIcon(mydb.getState(id_To_Update));
+                                   displayToast("added to favourites",0);
                                }
                            }
                             return true;
                         case R.id.share_view:
-                            saveNote();
                             if(note.getText().toString().trim().equals("")){
-                                Toast.makeText(DisplayNote.this,"Can't Send Empty Note",Toast.LENGTH_SHORT).show();
+                                displayToast("Can't Share Empty Note",0);
                             }
                             else if(id_To_Update==0){
-                                Toast.makeText(DisplayNote.this,"please save before sharing",Toast.LENGTH_SHORT).show();
+                                displayToast("Save the note",0);
                             }
                             else {
                                 Intent send=new Intent();
@@ -341,44 +440,23 @@ public class DisplayNote extends AppCompatActivity {
                             }
                             return true;
                         case R.id.delete_view:
-                            final Bundle state=new Bundle();
                             if(id_To_Update==0){
-                                Toast.makeText(DisplayNote.this,"not saved yet",Toast.LENGTH_LONG).show();
+                                displayToast("not saved yet",0);
                             }
-                            else if(mydb.getState(id_To_Update)!=3){
-
-
+                            else if(mydb.getState(id_To_Update)!=NotesDb.deleted){
                                 if(value_f_b==-3 || value_f_b==-1){
                                     finishAffinity();
                                     System.exit(0);
                                 }
                                 Intent intent=new Intent(DisplayNote.this,MainActivity.class);
-                                if(mydb.getState(id_To_Update)==1){
-                                    state.putString("state","a");
-                                }
-                                else if(mydb.getState(id_To_Update)==2){
-                                    state.putString("state","a");
-                                }
-                                else if(mydb.getState(id_To_Update)==4){
-                                    state.putString("state","h");
-                                }
-                                else if(mydb.getState(id_To_Update)==5){
-                                    state.putString("state","w");
-                                }
-                                else if(mydb.getState(id_To_Update)==6){
-                                    state.putString("state","e");
-                                }
-                                else if(mydb.getState(id_To_Update)==7){
-                                    state.putString("state","o");
-                                }
-                                mydb.changeState(id_To_Update,3);
-                                Toast.makeText(DisplayNote.this,"moved to deleted notes",Toast.LENGTH_LONG).show();
-                                intent.putExtras(state);
+                                mydb.changeState(id_To_Update,NotesDb.deleted);
+                                displayToast("moved to trash",0);
+                                intent.putExtras(prevstate);
                                 startActivity(intent);
+                                overridePendingTransition(R.anim.slide_out_bottom,R.anim.slide_in_bottom);
                                 finish();
-
                             }
-                            else if(mydb.getState(id_To_Update)==3){
+                            else if(mydb.getState(id_To_Update)==NotesDb.deleted){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(DisplayNote.this);
                                 builder.setMessage("You can't recover again");
                                 builder.setIcon(R.drawable.delete_forever);
@@ -393,9 +471,9 @@ public class DisplayNote extends AppCompatActivity {
                                                 System.exit(0);
                                             }
                                             Intent intent=new Intent(DisplayNote.this,MainActivity.class);
-                                            state.putString("state","d");
-                                            intent.putExtras(state);
+                                            intent.putExtras(prevstate);
                                             startActivity(intent);
+                                            overridePendingTransition(R.anim.slide_out_bottom,R.anim.slide_in_bottom);
                                             finish();
                                         }
                                     }
@@ -429,36 +507,16 @@ public class DisplayNote extends AppCompatActivity {
     public void onBackPressed() {
         if(!note.getText().toString().trim().equals("")){
             saveNote();
-            if(value_f_b>=0){
-                Bundle state =new Bundle();
+            if (extras.getString("notes")!=null){
+                finish();
+            }
+            else if(value_f_b>=0){
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                if(mydb.getState(id_To_Update)==1){
-                    state.putString("state","a");
-                }
-                else if(mydb.getState(id_To_Update)==2){
-                    state.putString("state","a");
-                }
-                else if(mydb.getState(id_To_Update)==3){
-                    state.putString("state","d");
-                }
-                else if(mydb.getState(id_To_Update)==4){
-                    state.putString("state","h");
-                }
-                else if(mydb.getState(id_To_Update)==5){
-                    state.putString("state","w");
-                }
-                else if(mydb.getState(id_To_Update)==6){
-                    state.putString("state","e");
-                }
-                else if(mydb.getState(id_To_Update)==7){
-                    state.putString("state","o");
-                }
-                intent.putExtras(state);
+                intent.putExtras(prevstate);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_out_bottom,R.anim.slide_in_bottom);
             }
             finish();
-
-
         }
         else {
             AlertDialog.Builder builder = new AlertDialog.Builder(DisplayNote.this);
@@ -470,6 +528,7 @@ public class DisplayNote extends AppCompatActivity {
                     if(value_f_b>=0) {
                         Intent intent = new Intent(DisplayNote.this, MainActivity.class);
                         startActivity(intent);
+                        overridePendingTransition(R.anim.slide_out_bottom,R.anim.slide_in_bottom);
                     }
                     finish();
                 }
@@ -496,43 +555,41 @@ public class DisplayNote extends AppCompatActivity {
         }
     }
     public void saveNote(){
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat tf=new SimpleDateFormat(" hh:mm a", Locale.US);
-        String timeString=tf.format(c.getTime());
-        SimpleDateFormat df = new SimpleDateFormat(" ddMMM",Locale.US);
-        String dateString= df.format(c.getTime());
+        Calendar cn = Calendar.getInstance();
+        SimpleDateFormat tfn=new SimpleDateFormat("ddMMM yyyy hh:mm a", Locale.US);
+        String timeStringn=tfn.format(cn.getTime());
+        SimpleDateFormat dfn = new SimpleDateFormat("ddMMM",Locale.US);
+        String dateStringn= dfn.format(cn.getTime());
         if (id_To_Update> 0) {
             if (note.getText().toString().trim().equals("")) {
-                Toast.makeText(this,"Can't save empty note",Toast.LENGTH_SHORT).show();
+                displayToast("Can't save empty note",0);
             }
             else {
-                if(note.getText().toString().equals(mydb.getNote(id_To_Update))){
-
-                }
-                else{
+                if(!note.getText().toString().equals(mydb.getNote(id_To_Update))){
+                    datetime.setText(timeStringn);
                     if (mydb.updateNotes(id_To_Update, note.getText()
-                            .toString(), timeString,dateString)) {
-                        Toast.makeText(this,"updated successfully",Toast.LENGTH_SHORT).show();
-
+                            .toString(), timeStringn,dateStringn)) {
+                        displayToast("updated successfully",0);
 
                     } else {
-                        Toast.makeText(this,"can't update",Toast.LENGTH_SHORT).show();
+                        displayToast("can't update",0);
                     }
+
                 }
+
             }
         }
         else {
             if (note.getText().toString().trim().equals("")) {
-                Toast.makeText(this,"Can't save empty note",Toast.LENGTH_SHORT).show();
+                displayToast("Can't save empty note",0);
 
             } else {
-                if (mydb.insertNotes(note.getText().toString(), timeString, dateString)) {
+                if (mydb.insertNotes(note.getText().toString(), timeStringn, dateStringn)) {
                     id_To_Update= mydb.getMaxId();
-                    Toast.makeText(this,"saved successfully",Toast.LENGTH_SHORT).show();
+                    displayToast("saved successfully",0);
                 }
                 else {
-                    Toast.makeText(this,"can't save",Toast.LENGTH_SHORT).show();
-
+                    displayToast("can't save",0);
                 }
             }
         }
@@ -540,17 +597,76 @@ public class DisplayNote extends AppCompatActivity {
     }
 
 
-    public void changeFavIcon(int id){
-        if (id > 0) {
-            if(mydb.getState(id)==2){
-                fav_i.findItem(R.id.fav_view).setIcon(R.drawable.fav_ful);
+    public void changeFavIcon(int state){
+        if(state==NotesDb.favorite){
+            fav_i.findItem(R.id.fav_view).setIcon(R.drawable.fav_ful);
+        }
+        else {
+            fav_i.findItem(R.id.fav_view).setIcon(R.drawable.star_b );
+        }
+
+    }
+    public void createNotificationChannel(){
+        mNotificationManager = (NotificationManager) getSystemService( NOTIFICATION_SERVICE ) ;
+        if (android.os.Build.VERSION. SDK_INT >= android.os.Build.VERSION_CODES. O ) {
+            NotificationChannel notificationChannel = new
+                    NotificationChannel( NOTIFICATION_CHANNEL_ID , "Reminder" ,NotificationManager.IMPORTANCE_HIGH) ;
+            notificationChannel.enableVibration(true);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.GREEN);
+            mNotificationManager.createNotificationChannel(notificationChannel) ;
+        }
+
+    }
+    public void createRemind(Calendar c){
+        Intent intent=new Intent(DisplayNote.this,BroadcastRec.class);
+        Bundle dataBundle = new Bundle();
+        String month = String.valueOf(c.get(Calendar.MONTH)+1);
+        String remind=c.get(Calendar.DATE)+"-"+month+"-"+c.get(Calendar.YEAR)+" "+c.get(Calendar.HOUR)+":"+c.get(Calendar.MINUTE);
+        if(c.get(Calendar.AM_PM)==Calendar.AM){
+            remind += "AM";
+        }
+        else {
+            remind=remind+"PM";
+        }
+        dataBundle.putInt("id", id_To_Update);
+        dataBundle.putString("prev","All Notes");
+        dataBundle.putString("notes",mydb.getNote(id_To_Update));
+        intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
+        intent.putExtras(dataBundle);
+        PendingIntent pendingIntent=PendingIntent.getBroadcast(DisplayNote.this,id_To_Update,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager=(AlarmManager) getSystemService(ALARM_SERVICE);
+        if(alarmManager!=null){
+            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pendingIntent);
+                mydb.updateRemind(id_To_Update,remind);
+                bell_off.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                displayToast("Reminder set on\n"+remind,1);
+            }
+            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pendingIntent);
+                mydb.updateRemind(id_To_Update,remind);
+                bell_off.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                displayToast("Reminder set on\n"+remind,1);
             }
             else {
-                fav_i.findItem(R.id.fav_view).setIcon(R.drawable.star_b );
+                alarmManager.set(AlarmManager.RTC_WAKEUP,c.getTimeInMillis(),pendingIntent);
+                mydb.updateRemind(id_To_Update,remind);
+                bell_off.setImageResource(R.drawable.ic_baseline_notifications_active_24);
+                displayToast("Reminder set on\n"+remind,1);
             }
 
         }
     }
+    public void displayToast(String string,int t){
+        Toast toast;
+        if(t==0) toast = Toast.makeText(getApplicationContext(), string, Toast.LENGTH_SHORT);
+        else toast = Toast.makeText(getApplicationContext(), string, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER,0,0);
+        toast.show();
+    }
+
+
 
 }
 

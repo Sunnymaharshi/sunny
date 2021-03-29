@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/deleted_m"
-        android:title="@string/deleted_notes_m_r"
-        app:showAsAction="never"
+    <item android:id="@+id/search"
+        android:icon="@drawable/ic_baseline_search_24"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/search"
+        android:iconTint="@color/black"
         android:orderInCategory="3"
-        />
+        app:actionViewClass="android.widget.SearchView"/>
     <item
         android:id="@+id/clear_del"
         android:title="@string/clear_all"
         app:showAsAction="never"
-        android:orderInCategory="5"
+        android:orderInCategory="4"
         />
     <item
         android:id="@+id/fav_main_m"
@@ -45,6 +46,6 @@
         android:id="@+id/restore_del"
         android:title="@string/restore_deleted"
         app:showAsAction="never"
-        android:orderInCategory="4" />
+        android:orderInCategory="5" />
 
 </menu>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/cats_title"
-        android:title="@string/categories_title"
-        />
+   <item android:id="@+id/reminds_nav_id"
+        android:icon="@drawable/ic_baseline_notifications_active_24"
+        android:iconTint="@color/black"
+        android:title="@string/remainders"/>
     <group android:id="@+id/category_grp">
-
         <item
             android:id="@+id/home_cat"
             android:icon="@drawable/ic_baseline_home_work_24"
@@ -27,19 +27,26 @@
             android:title="@string/personal_cat"
             android:iconTint="@color/black"/>
     </group>
-    <item
-        android:id="@+id/settings_nav_id"
-        android:title="@string/settings_str"
-        android:icon="@drawable/ic_baseline_settings_24"
+    <item android:id="@+id/archived_cat"
+        android:icon="@drawable/ic_baseline_archive_24"
+        android:title="@string/archived_cat"
         android:iconTint="@color/black"/>
-    <item android:id="@+id/rate_nav_id"
-        android:title="Rate this app"
-        android:icon="@drawable/fav_ful"
+    <item android:id="@+id/trash_nav_id"
+        android:icon="@drawable/delete"
+        android:title="@string/trash"
         android:iconTint="@color/black"/>
-    <item android:id="@+id/share_nav_id"
-        android:title="Share App"
-        android:icon="@drawable/share_b"
-        android:iconTint="@color/black"/>
+
+    <group android:id="@+id/rate_share_grp">
+        <item android:id="@+id/rate_nav_id"
+            android:title="@string/rate_this_app"
+            android:icon="@drawable/fav_ful"
+            android:iconTint="@color/black"/>
+        <item android:id="@+id/share_nav_id"
+            android:title="@string/share_app"
+            android:icon="@drawable/share_b"
+            android:iconTint="@color/black"/>
+    </group>
+
 
 
 

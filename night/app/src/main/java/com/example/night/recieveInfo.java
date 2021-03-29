@@ -32,5 +32,7 @@ public class recieveInfo extends AppCompatActivity {
             startActivity(intents);
             finish();
         }
+
+
     }
 }
